@@ -1,0 +1,51 @@
+
+
+--Write a SQL query to count the number of employees working in project '48205501099'
+
+select count(1) from employees emp
+INNER JOIN SALARIES sal
+on emp.ID = sal.EMPLOYEE_ID
+INNER JOIN projects pro
+on sal.PROJECT_ID = pro.ID
+where pro.CODE = '48205501099'
+;
+
+--Write a SQL query to fetch employee names (one column, don't change the alias)
+--having salary greater than or equal to 2500 and less than or equal 3000.
+
+SELECT em.FULL_NAME FROM EMPLOYEES em
+INNER JOIN SALARIES sa 
+ON em.ID=sa.EMPLOYEE_ID
+WHERE sa.SALARY>=2500 AND sa.SALARY<=3000;
+
+--Write a SQL query to fetch project code and count of employees (code, counter) sorted by counter in ascending order. example 48205501099, 4
+select code, (select count(1) from salaries where PROJECT_ID = pro.ID) counter from projects pro
+order by counter;
+
+-- Write a query to fetch employee names of those who are not assigned to any project
+SELECT em.FULL_NAME FROM EMPLOYEES em
+LEFT JOIN SALARIES sa 
+ON em.ID=sa.EMPLOYEE_ID
+where sa.EMPLOYEE_ID is null;
+
+select em.FULL_NAME FROM EMPLOYEES em
+where em.id not in (select employee_id from salaries);
+
+-- Write a SQL query to fetch all the Employees who are also managers from employees table
+
+select * from employees where id in (select manager_id from employees);
+
+--Write a SQL query to fetch each employee with the name of his/her boss in one column named 
+--"employee_boss" separated by ' - ' (don't forget the spaces). 
+--Example: "Drew Rosario - Holmes Manning", "Emery Kelley - Holmes Manning" (employee name - manager name)
+
+select em.full_name || ' - ' || (select full_name from employees where id = em.manager_id) employee_boss
+from employees em where em.manager_id is not null;
+
+select em.full_name || ' - ' || emman.FULL_NAME employee_boss from employees em
+join employees emman
+on em.MANAGER_ID = emman.id;
+
+--Write a SQL query to fetch all the employees which first name is Kermit
+select * from  employees em 
+where em.FULL_NAME like 'Kermit%';
